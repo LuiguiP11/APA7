@@ -12,6 +12,12 @@
       box-sizing: border-box;
     }
 
+    body {
+      background-color: #0f0f0f; /* Fondo oscuro para toda la página */
+      color: #e0e0e0;
+      font-family: sans-serif;
+    }
+
     /* Estilos para la Splash Screen */
     #splash-screen {
       position: fixed;
@@ -27,53 +33,145 @@
       align-items: center;
       font-size: 2em;
       z-index: 99999; /* Asegura que esté por encima de todo */
-      transition: opacity 1s ease-out;
+      opacity: 0; /* Inicialmente invisible */
+      transform: scale(0.8); /* Inicialmente más pequeño */
+      animation: fadeInZoomIn 0.5s ease-out forwards; /* Animación de entrada */
     }
 
     #splash-screen.hidden {
+      animation: fadeOutZoomOut 0.5s ease-in forwards; /* Animación de salida */
+    }
+
+    @keyframes fadeInZoomIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes fadeOutZoomOut {
+      from { opacity: 1; transform: scale(1); }
+      to { opacity: 0; transform: scale(1.2); visibility: hidden; }
+    }
+
+    /* Estilos para la Pantalla de Menú (P2) */
+    #menu-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #0f0f0f;
+      color: #e0e0e0;
+      display: none; /* Cambiado a none por defecto */
+      justify-content: center;
+      align-items: center;
+      z-index: 99998; /* Justo debajo del splash */
       opacity: 0;
-      visibility: hidden;
+      visibility: hidden; /* Oculto hasta que se active */
+      transition: opacity 0.5s ease, visibility 0.5s ease;
     }
 
-    #splash-screen h1 {
-      font-size: 1.5em;
-      margin-bottom: 0.5em;
+    #menu-screen.show {
+      display: flex; /* Mostrar como flex cuando tenga la clase show */
+      opacity: 1;
+      visibility: visible;
     }
 
-    #splash-screen p {
-      font-size: 0.7em;
+    .menu-container {
+      text-align: center;
+      background-color: #1c1c1c;
+      padding: 2rem 3rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      animation: fadeInSlideUp 0.5s ease-out forwards;
+    }
+
+    .menu-container h2 {
+      margin-bottom: 0.5rem;
+      color: #ffffff;
+    }
+
+    .menu-container p {
+      margin-bottom: 1.5rem;
+      color: #bbbbbb;
+    }
+
+    .menu-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .menu-button {
+      padding: 0.8rem 2rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background-color: #8e44ad; /* Violeta */
+      color: #ffffff;
+    }
+
+    .menu-button:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
     }
 
     /* Estilos para la barra de carga */
     #loading-bar {
-      width: 0%;
-      height: 5px;
-      background-color: #8e44ad; /* Color de la barra */
+      width: 80%;
+      max-width: 300px;
+      height: 8px;
+      background-color: #333; /* Color de fondo de la barra */
+      border-radius: 4px;
       margin-top: 20px;
-      border-radius: 5px;
-      animation: fillBar 3s forwards; /* Animación de llenado */
+      overflow: hidden; /* Asegura que el relleno no se salga */
+      position: relative;
     }
 
-    @keyframes fillBar {
-      from { width: 0%; }
-      to { width: 100%; }
+    #loading-bar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 0;
+      background-color: #8e44ad; /* Color de la barra de carga, violeta */
+      border-radius: 4px;
+      animation: loadingAnimation 3s ease-in-out forwards; /* La animación dura lo mismo que el splash */
     }
 
-    body {
-      background-color: #0f0f0f;
-      color: #e0e0e0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      line-height: 1.6;
-      padding: 1rem 1.5rem;
+    @keyframes loadingAnimation {
+      from {
+        width: 0;
+      }
+      to {
+        width: 100%;
+      }
     }
 
+    /* Estilos para el contenido principal */
     .container {
       max-width: 768px;
       margin: auto;
       padding: 1.5rem;
-      background-color: #1c1c1c;
+      background-color: #0f0f0f; /* Cambiado al color de fondo de P1 */
       border-radius: 12px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      opacity: 0; /* Inicialmente invisible */
+      transform: translateY(20px); /* Inicialmente un poco abajo */
+	  display: none; /* Oculto por defecto */
+    }
+
+    .container.show {
+	  display: block; /* Mostrar cuando tenga la clase show */
+      animation: fadeInSlideUp 0.8s ease-out forwards; /* Animación de entrada */
+    }
+
+    @keyframes fadeInSlideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     h1,
@@ -375,6 +473,19 @@
     <div id="loading-bar"></div>
   </div>
 
+  <!-- Pantalla de Menú (P2) -->
+  <div id="menu-screen">
+    <div class="menu-container">
+      <h2>Menú Principal</h2>
+      <p>Selecciona una opción para continuar</p>
+      <div class="menu-buttons">
+        <button class="menu-button" onclick="mostrarP3()">Citas</button>
+        <button class="menu-button" onclick="window.open('https://www.researchrabbit.ai/', '_blank')">Estado del Arte</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenido Principal (P3) -->
   <div class="container">
     <header>
       <p>&nbsp;</p>
@@ -603,14 +714,26 @@
       });
     }
 
-    // JavaScript para la Splash Screen
+    // Función para mostrar P3 (Contenido Principal)
+    function mostrarP3() {
+      const menuScreen = document.getElementById('menu-screen');
+      const mainContent = document.querySelector('.container');
+
+      menuScreen.classList.remove('show'); // Oculta el menú
+      mainContent.classList.add('show'); // Muestra el contenido principal
+    }
+
+    // JavaScript para la Splash Screen y el menú
     window.addEventListener('load', () => {
       const splashScreen = document.getElementById('splash-screen');
+      const menuScreen = document.getElementById('menu-screen');
+      
+      // Ocultar splash y mostrar el menú después de la animación
       setTimeout(() => {
         splashScreen.classList.add('hidden');
-      }, 3000); // 3000 milisegundos = 3 segundos
+        menuScreen.classList.add('show');
+      }, 3000); // Duración de la splash screen
     });
-  </script>
   </script>
 
 </body>
